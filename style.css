@@ -1,0 +1,111 @@
+/* ------------------------------
+   全体レイアウト
+------------------------------ */
+body {
+  font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
+  padding: 20px;
+  background: #fafafa;
+  margin: 0;
+}
+
+#date {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* ------------------------------
+   タスクボタン
+------------------------------ */
+.task-btn {
+  width: 100%;
+  padding: 16px;
+  margin: 10px 0;
+  border-radius: 16px;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* チェック済み（✓だけ表示） */
+.checked {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* 過去日のボタン（淡くする） */
+.past-day {
+  opacity: 0.45;
+  pointer-events: none; /* 過去日は押せない */
+}
+
+/* スマホで押しやすいように */
+.task-btn:active {
+  transform: scale(0.97);
+}
+
+.category-row {
+  display: flex;
+  flex-wrap: wrap;     /* スマホで折り返し */
+  gap: 10px;           /* ボタン同士のすき間 */
+  margin-bottom: 20px; /* カテゴリ間の余白 */
+}
+
+.task-btn {
+  flex: 1 1 calc(50% - 10px); /* 2列にする（スマホ向け） */
+  max-width: 180px;           /* 横に広がりすぎないように */
+}
+
+/* ---------------------------------------------
+   時間記録用の大きなボタン（task-btn と同じ雰囲気）
+   中に「名前・時間・＋・−」を横並びで配置する
+--------------------------------------------- */
+.time-block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: none;
+  background: #ffdca8;
+  font-size: 18px;
+  flex-wrap: nowrap;         /* 折り返しを防ぐ */
+  min-width: 280px;          /* 最小幅を広げる（←追加） */
+  max-width: 100%;           /* スマホで画面からはみ出さないように */
+  overflow-x: auto;          /* 万が一はみ出したらスクロール可能に */
+}
+
+/* 左側：項目名（テレビなど） */
+.time-label {
+  flex: 1;
+  font-weight: bold;
+}
+
+/* 中央：現在の合計時間（例：30分） */
+.time-value {
+  font-size: 18px;
+  margin-right: auto;
+}
+
+/* 右側の丸い＋・−ボタン */
+.circle-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  background: white;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* 押したときに少し縮むアニメーション */
+.circle-btn:active {
+  transform: scale(0.95);
+}
