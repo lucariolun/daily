@@ -117,67 +117,56 @@ loadTimeCounters();
 // ・1つの大きなボタンの中に「名前・時間・＋・−」を配置
 // ---------------------------------------------
 function loadTimeCounters() {
-  // 今日の日付をキーにする（例：time_2026-02-01）
   const key = "time_" + formatDate(currentDate);
-
-  // 保存されているデータを読み込む（なければ空オブジェクト）
   const saved = JSON.parse(localStorage.getItem(key)) || {};
 
-  // 表示エリアを取得して中身を空にする
   const container = document.getElementById("time-container");
   container.innerHTML = "";
 
-  // 各項目（テレビ・Youtube など）を順番に表示
+  // 2列レイアウト用のラッパー
+  const row = document.createElement("div");
+  row.className = "time-row";
+
   timeItems.forEach(name => {
-    // 保存されている時間（分）を取得。なければ0分。
     const minutes = saved[name] || 0;
 
-    // 1つの大きなボタン枠（task-btn と同じ見た目）
+    // 2列用の半分幅ボタン
     const wrapper = document.createElement("div");
-    wrapper.className = "task-btn time-block";
+    wrapper.className = "task-btn time-block half-width";
 
-    // 左側：項目名（テレビなど）
     const label = document.createElement("span");
     label.className = "time-label";
     label.textContent = name;
 
-    // 中央：現在の合計時間（例：30分）
     const value = document.createElement("span");
     value.className = "time-value";
     value.textContent = `${minutes}分`;
 
-    // 右側：＋ボタン（10分増える）
     const plusBtn = document.createElement("button");
     plusBtn.className = "circle-btn plus";
     plusBtn.textContent = "＋";
-
-    // ＋ボタンを押したときの処理
     plusBtn.onclick = () => {
-      saved[name] = (saved[name] || 0) + 10; // 10分追加
-      localStorage.setItem(key, JSON.stringify(saved)); // 保存
-      loadTimeCounters(); // 再描画
+      saved[name] = (saved[name] || 0) + 10;
+      localStorage.setItem(key, JSON.stringify(saved));
+      loadTimeCounters();
     };
 
-    // 右側：−ボタン（10分減る）
     const minusBtn = document.createElement("button");
     minusBtn.className = "circle-btn minus";
     minusBtn.textContent = "−";
-
-    // −ボタンを押したときの処理
     minusBtn.onclick = () => {
-      // 0分より下にはならないようにする
       saved[name] = Math.max(0, (saved[name] || 0) - 10);
-      localStorage.setItem(key, JSON.stringify(saved)); // 保存
-      loadTimeCounters(); // 再描画
+      localStorage.setItem(key, JSON.stringify(saved));
+      loadTimeCounters();
     };
 
-    // ボタン枠にパーツを追加
     wrapper.appendChild(label);
     wrapper.appendChild(value);
     wrapper.appendChild(plusBtn);
     wrapper.appendChild(minusBtn);
 
-    // 全体の表示エリアに追加
-    container.appendChild(wrapper);
+    row.appendChild(wrapper);
   });
+
+  container.appendChild(row);
 }
