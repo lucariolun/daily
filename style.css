@@ -28,6 +28,9 @@ body {
   cursor: pointer;
   transition: 0.2s;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  /* ★がボタンの外に出ても見えるように */
+  overflow: visible;
 }
 
 /* チェック済み（✓だけ表示） */
@@ -39,7 +42,7 @@ body {
 /* 過去日のボタン（淡くする） */
 .past-day {
   opacity: 0.45;
-  pointer-events: none; /* 過去日は押せない */
+  pointer-events: none;
 }
 
 /* スマホで押しやすいように */
@@ -49,20 +52,37 @@ body {
 
 .category-row {
   display: flex;
-  flex-wrap: wrap;     /* スマホで折り返し */
-  gap: 10px;           /* ボタン同士のすき間 */
-  margin-bottom: 20px; /* カテゴリ間の余白 */
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .task-btn {
-  flex: 1 1 calc(50% - 10px); /* 2列にする（スマホ向け） */
-  max-width: 180px;           /* 横に広がりすぎないように */
+  flex: 1 1 calc(50% - 10px);
+  max-width: 180px;
 }
 
-/* ---------------------------------------------
-   時間記録用の大きなボタン（task-btn と同じ雰囲気）
-   中に「名前・時間・＋・−」を横並びで配置する
---------------------------------------------- */
+/* ------------------------------
+   ★（星）表示
+------------------------------ */
+.star-row {
+  display: flex;
+  flex-wrap: wrap;        /* 10個で折り返し */
+  max-width: 120px;       /* 折り返し幅 */
+  justify-content: flex-start; /* 左寄せ */
+  font-size: 14px;
+  line-height: 1.2;
+  pointer-events: none;   /* 星はクリック不可 */
+}
+
+/* 星の色を濃くしたい場合の例 */
+.star-row span {
+  filter: brightness(0.85);
+}
+
+/* ------------------------------
+   時間記録用の大きなボタン
+------------------------------ */
 .time-block {
   display: flex;
   align-items: center;
@@ -71,24 +91,21 @@ body {
   padding: 12px 16px;
   border-radius: 16px;
   border: none;
-  background: #ffdca8; /* やさしいオレンジ色 */
+  background: #ffdca8;
   font-size: 18px;
-  flex-wrap: wrap; /* スマホで折り返し可能に */
+  flex-wrap: wrap;
 }
 
-/* 左側：項目名（テレビなど） */
 .time-label {
   flex: 1;
   font-weight: bold;
 }
 
-/* 中央：現在の合計時間（例：30分） */
 .time-value {
   font-size: 18px;
   margin-right: auto;
 }
 
-/* 右側の丸い＋・−ボタン */
 .circle-btn {
   width: 36px;
   height: 36px;
@@ -102,20 +119,24 @@ body {
   box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
-/* 押したときに少し縮むアニメーション */
 .circle-btn:active {
   transform: scale(0.95);
 }
 
-/* 2列で並べるための行コンテナ */
 .time-row {
   display: flex;
-  flex-wrap: wrap;   /* 折り返しOK */
-  gap: 12px;         /* ボタン同士のすき間 */
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-/* 各ボタンを半分の幅にする */
 .time-block.half-width {
-  flex: 1 1 calc(50% - 12px); /* 2列にする */
-  min-width: 160px;           /* スマホでも崩れないように */
+  flex: 1 1 calc(50% - 12px);
+  min-width: 160px;
+}
+
+.media-total {
+  margin: 20px 0 10px;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
 }

@@ -20,8 +20,12 @@ const colors = {
 // ------------------------------
 let currentDate = new Date();
 
+// UTCズレ防止のために手動フォーマット
 function formatDate(date) {
-  return date.toISOString().split("T")[0];
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 }
 
 function renderDate() {
@@ -35,7 +39,29 @@ function renderDate() {
 }
 
 // ------------------------------
-// タスク描画
+// ★ 過去30日＋当日の達成を集計
+// ------------------------------
+function getMonthlyStars(taskName) {
+  const stars = [];
+  const today = new Date();
+
+  for (let i = 0; i < 30; i++) { // ← 当日も含める
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+
+    const key = "tasks_" + formatDate(d);
+    const saved = JSON.parse(localStorage.getItem(key)) || {};
+
+    if (saved[taskName]) {
+      stars.push("★");
+    }
+  }
+
+  return stars.reverse(); // 古い順に並べる
+}
+
+// ------------------------------
+// タスク描画（★つき）
 // ------------------------------
 function loadTasks() {
   const key = "tasks_" + formatDate(currentDate);
@@ -50,7 +76,6 @@ function loadTasks() {
   for (const category in categories) {
     const color = colors[category];
 
-    // ★ 分類ごとの横並びコンテナ
     const row = document.createElement("div");
     row.className = "category-row";
 
@@ -58,10 +83,11 @@ function loadTasks() {
       const btn = document.createElement("button");
       btn.className = "task-btn";
       btn.style.background = color;
+      btn.style.position = "relative"; // ★を中に置くため
 
       const checked = saved[task] === true;
-
       btn.textContent = checked ? "✓" : task;
+
       if (checked) btn.classList.add("checked");
       if (isPast) btn.classList.add("past-day");
 
@@ -72,6 +98,24 @@ function loadTasks() {
         loadTasks();
       };
 
+      // ★の表示
+      const stars = getMonthlyStars(task);
+      const starRow = document.createElement("div");
+      starRow.className = "star-row";
+      starRow.style.position = "absolute";
+      starRow.style.top = "-20px";
+      starRow.style.left= "0";
+      //starRow.style.left = "50%";
+      //starRow.style.transform = "translateX(-50%)";
+
+      stars.forEach(() => {
+        const span = document.createElement("span");
+        span.textContent = "★";
+        span.style.color = color;
+        starRow.appendChild(span);
+      });
+
+      btn.appendChild(starRow);
       row.appendChild(btn);
     });
 
@@ -93,15 +137,14 @@ document.addEventListener("touchend", e => {
   const diff = endX - startX;
 
   if (diff > 80) {
-    // 右スワイプ → 前日
     currentDate.setDate(currentDate.getDate() - 1);
   } else if (diff < -80) {
-    // 左スワイプ → 翌日
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
   renderDate();
   loadTasks();
+  loadTimeCounters();
 });
 
 // ------------------------------
@@ -109,12 +152,10 @@ document.addEventListener("touchend", e => {
 // ------------------------------
 renderDate();
 loadTasks();
-loadTimeCounters(); 
+loadTimeCounters();
 
 // ---------------------------------------------
-// 時間カウンターを読み込んで表示する関数
-// ・日付ごとに localStorage に保存
-// ・1つの大きなボタンの中に「名前・時間・＋・−」を配置
+// 時間カウンター
 // ---------------------------------------------
 function loadTimeCounters() {
   const key = "time_" + formatDate(currentDate);
@@ -123,14 +164,12 @@ function loadTimeCounters() {
   const container = document.getElementById("time-container");
   container.innerHTML = "";
 
-  // 2列レイアウト用のラッパー
   const row = document.createElement("div");
   row.className = "time-row";
 
   timeItems.forEach(name => {
     const minutes = saved[name] || 0;
 
-    // 2列用の半分幅ボタン
     const wrapper = document.createElement("div");
     wrapper.className = "task-btn time-block half-width";
 
